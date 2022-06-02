@@ -1,5 +1,6 @@
 var player;
 var stars;
+var redstars;
 var bombs;
 var cursors;
 var score;
@@ -8,26 +9,26 @@ var scoreText;
 
 export class Play extends Phaser.Scene {
   constructor() {
-    super("play");
+    super("Play");
   }
 
   preload() {
     this.load.tilemapTiledJSON("map", "public/assets/tilemaps/nivel1.json");
     this.load.image("fondo", "public/assets/images/fondos.png");
-    this.load.image("Platform", "public/assets/images/plataformas.png");
+    this.load.image("platform", "public/assets/images/plataformas.png");
   }
   create() {
     const map = this.make.tilemap({ key: "map" });
     const tilesetBelow = map.addTilesetImage("fondos", "fondo");
-    const tilesetPlatform = map.addTilesetImage("plataformas", "Platform");
+    const tilesetPlatform = map.addTilesetImage("plataformas", "platform");
 
-    const belowLayer = map.createLayer("Fondo", tilesetBelow, 0, 0);
-    const worldLayer = map.createLayer("Plataformas", tilesetPlatform, 0, 0);
-    const objectsLayer = map.getObjectLayer("Objetos");
+    const belowLayer = map.createLayer("fondos", tilesetBelow, 0, 0);
+    const worldLayer = map.createLayer("plataformas", tilesetPlatform, 0, 0);
+    const objectsLayer = map.getObjectLayer("objetos");
 
     worldLayer.setCollisionByProperty({ collides: true });
 
-    const spawnPoint = map.findObject("Objetos", (obj) => obj.name === "dude");
+    const spawnPoint = map.findObject("objetos", (obj) => obj.name === "dude");
 
     player = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, "dude");
 
@@ -38,8 +39,7 @@ export class Play extends Phaser.Scene {
       cursors = this.input.keyboard.createCursorKeys();
     }
 
-    star = this.physics.add.group();
-
+    stars = this.physics.add.group();
     objectsLayer.objects.forEach((objData) => {
       const { x = 0, y = 0, name, type } = objData;
       switch (type) {
@@ -50,13 +50,13 @@ export class Play extends Phaser.Scene {
         }
       }
     });
-    redstar = this.physics.add.group();
 
+    redstars = this.physics.add.group();
     objectsLayer.objects.forEach((objData) => {
       const { x = 0, y = 0, name, type } = objData;
       switch (type) {
         case "redstar": {
-          var star = stars.create(x, y, "redstar");
+          var star = redstars.create(x, y, "redstar");
           star.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
           break;
         }
@@ -70,10 +70,14 @@ export class Play extends Phaser.Scene {
     });
 
     this.physics.add.collider(player, worldLayer);
+
     this.physics.add.collider(stars, worldLayer);
+    this.physics.add.collider(redstars, worldLayer);
+
     this.physics.add.collider(bombs, worldLayer);
 
     this.physics.add.overlap(player, stars, this.collectStar, null, this);
+    this.physics.add.overlap(player, redstars, this.collectStar, null, this);
 
     this.physics.add.collider(player, bombs, this.hitBomb, null, this);
 
@@ -100,13 +104,15 @@ export class Play extends Phaser.Scene {
       player.anims.play("turn");
     }
 
-    if (cursors.up.isDown && player.body.touching.down) {
+    if (cursors.up.isDown && player.body.blocked.down) {
       player.setVelocityY(-330);
     }
   }
   collectStar(player, star) {
     star.disableBody(true, true);
-    score += 15;
+
+    // Estaria bueno diferenciar lospuntajes de ambas manzanas
+    score += 10;
     scoreText.setText("Score: " + score);
 
     if (stars.countActive(true) === 0) {
