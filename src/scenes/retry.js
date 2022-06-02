@@ -10,14 +10,15 @@ export class Retry extends Phaser.Scene {
   }
   create() {
     this.add
-      .image(this.cameras.main.centerX, this.cameras.main.centerY, "Fondo_Menu")
+      .image(this.cameras.main.centerX, this.cameras.main.centerY, "Fondo_Over")
       .setScale(1.1);
 
     this.add.image(
       this.cameras.main.centerX,
       this.cameras.main.centerY / 1.5,
       "gameover_logo"
-    );
+    )
+    .setScale(1.1);
 
     this.add
       .text(
@@ -30,10 +31,10 @@ export class Retry extends Phaser.Scene {
     const boton = new Button(
       this.cameras.main.centerX,
       this.cameras.main.centerY + this.cameras.main.centerY / 3,
-      "Retry",
+      "Reintentar",
       this,
       () => {
-        this.scene.start("Play");
+        this.scene.start("MainMenu");
       }
     );
   }

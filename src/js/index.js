@@ -1,7 +1,11 @@
 import { Preload } from "../scenes/preload.js";
 import { MainMenu } from "../scenes/MainMenu.js";
 import { Play } from "../scenes/play.js";
+import { Play2 } from "../scenes/play2.js";
+import { Play3 } from "../scenes/play3.js";
 import { Retry } from "../scenes/retry.js";
+import { Win } from "../scenes/win.js";
+
 
 var config = {
   type: Phaser.AUTO,
@@ -26,6 +30,6 @@ var config = {
       debug: false,
     },
   },
-  scene: [Preload, MainMenu, Play, Retry],
+  scene: [Preload, MainMenu, Play, Play2, Play3, Win, Retry],
 };
 var game = new Phaser.Game(config);

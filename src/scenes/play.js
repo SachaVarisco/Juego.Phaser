@@ -32,7 +32,7 @@ export class Play extends Phaser.Scene {
 
     player = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, "dude");
 
-    player.setBounce(0.2);
+    player.setBounce(0);
     player.setCollideWorldBounds(true);
 
     if ((cursors = !undefined)) {
@@ -64,9 +64,23 @@ export class Play extends Phaser.Scene {
     });
 
     bombs = this.physics.add.group();
+    objectsLayer.objects.forEach((objData) => {
+      const { x = 0, y = 0, name, type } = objData;
+      switch (type) {
+        case "bomb": {
+          var bomb = bombs.create(x, 16, 'bomb');
+         bomb.setBounce(1);
+          bomb.setCollideWorldBounds(true);
+          bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+          bomb.allowGravity = false;
+        }
+      }
+    })
+
+
     scoreText = this.add.text(30, 6, "score: 0", {
       fontSize: "32px",
-      fill: "#000",
+      fill: "#FFFFFF",
     });
 
     this.physics.add.collider(player, worldLayer);
@@ -86,6 +100,9 @@ export class Play extends Phaser.Scene {
   }
 
   update() {
+    if (redstars.countActive(true) === 0 && stars.countActive(true) === 0) { 
+      this.scene.start("Play2", { score: score });    
+    }
     if (gameOver) {
       return;
     }
@@ -115,47 +132,20 @@ export class Play extends Phaser.Scene {
     score += 10;
     scoreText.setText("Score: " + score);
 
-    if (stars.countActive(true) === 0) {
-      //  A new batch of stars to collect
-      stars.children.iterate(function (child) {
-        child.enableBody(true, child.x, 250, true, true);
-      });
-
-      var x =
-        player.x < 400
-          ? Phaser.Math.Between(400, 800)
-          : Phaser.Math.Between(0, 400);
-      var bomb = bombs.create(x, 16, "bomb");
-      bomb.setBounce(1);
-      bomb.setCollideWorldBounds(true);
-      bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-      bomb.allowGravity = false;
-    }
   }
+  
 
-  collectredStar(player, redstar) {
+  collectredStar(player, redstar) 
+  {
     redstar.disableBody(true, true);
     score += 15;
     scoreText.setText("Score: " + score);
 
-    if (redstars.countActive(true) === 0) {
-      //  A new batch of stars to collect
-      redstars.children.iterate(function (child) {
-        child.enableBody(true, child.x, 250, true, true);
-      });
-      var x =
-        player.x < 400
-          ? Phaser.Math.Between(400, 800)
-          : Phaser.Math.Between(0, 400);
-      var bomb = bombs.create(x, 16, "bomb");
-      bomb.setBounce(1);
-      bomb.setCollideWorldBounds(true);
-      bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-      bomb.allowGravity = false;
-    }
   }
+  
 
-  hitBomb(player, bomb) {
+  hitBomb(player, bomb) 
+  {
     this.physics.pause();
 
     player.setTint(0xff0000);
