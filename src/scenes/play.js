@@ -77,7 +77,7 @@ export class Play extends Phaser.Scene {
     this.physics.add.collider(bombs, worldLayer);
 
     this.physics.add.overlap(player, stars, this.collectStar, null, this);
-    this.physics.add.overlap(player, redstars, this.collectStar, null, this);
+    this.physics.add.overlap(player, redstars, this.collectredStar, null, this);
 
     this.physics.add.collider(player, bombs, this.hitBomb, null, this);
 
