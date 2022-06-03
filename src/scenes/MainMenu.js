@@ -21,7 +21,7 @@ export class MainMenu extends Phaser.Scene {
       "Jugar",
       this,
       () => {
-        this.scene.start("Win");
+        this.scene.start("Play");
       }
     );
   }
