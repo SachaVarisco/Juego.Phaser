@@ -130,7 +130,7 @@ export class Play2 extends Phaser.Scene {
           }
         })
         
-        scoreText = this.add.text(30, 6, "score:" +score, {
+        scoreText = this.add.text(30, 6, "Score:" +score, {
           fontSize: "32px",
           fill: "#FFFFFF",
         });

@@ -105,8 +105,8 @@ export class Play3 extends Phaser.Scene {
             }
           }
         })
-        scoreText = this.add.text(30, 6, "score:" +score, {
-          backgroundcolor: "#FFF",
+        scoreText = this.add.text(30, 6, "Score:" +score, {
+          backgroundcolor: "#FFFF",
           fontSize: "32px",
           fill: "#000",
         });
