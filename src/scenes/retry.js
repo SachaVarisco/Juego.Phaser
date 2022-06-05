@@ -24,9 +24,10 @@ export class Retry extends Phaser.Scene {
       .text(
         this.cameras.main.centerX,
         this.cameras.main.centerY,
-        `Puntaje alcanzado: ${score}`
+        `Puntaje de nivel alcanzado: ${score}`
       )
-      .setOrigin(0.5);
+      .setOrigin(0.5)
+      .setScale(1.2);
 
     const boton = new Button(
       this.cameras.main.centerX,

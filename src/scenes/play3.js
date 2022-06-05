@@ -7,19 +7,45 @@ var cursors;
 var score;
 var gameOver;
 var scoreText;
+var scoreTime;
+var scoreTimeText;
+var timedEvent;
 
 export class Play3 extends Phaser.Scene {
     constructor() {
       super("Play3");
     }
-
+    init(data) {
+      score = data.score;
+    }
+    
     preload() {
         this.load.tilemapTiledJSON("map3", "public/assets/tilemaps/nivel3.json");
         this.load.image("fondo3", "public/assets/images/fondos.png");
         this.load.image("platform3", "public/assets/images/plataformas.png");
     }
+    onSecond() {
+      if (! gameOver)
+      {       
+          scoreTime = scoreTime - 1; // One second
+          scoreTimeText.setText('Time: ' + scoreTime);
+          if (scoreTime == 0) {
+              timedEvent.paused = true;
+              this.scene.start(
+                "Retry",
+                { score: score } // se pasa el puntaje como dato a la escena RETRY
+              );
+       }            
+      }
+    }
 
     create() {
+      timedEvent = this.time.addEvent({ 
+        delay: 1000, 
+        callback: this.onSecond, 
+        callbackScope: this, 
+        loop: true 
+      });
         const map = this.make.tilemap({ key: "map3" });
         const tilesetBelow = map.addTilesetImage("fondos", "fondo3");
         const tilesetPlatform = map.addTilesetImage("plataformas", "platform3");
@@ -79,9 +105,15 @@ export class Play3 extends Phaser.Scene {
             }
           }
         })
-        scoreText = this.add.text(30, 6, "score: 0", {
+        scoreText = this.add.text(30, 6, "score:" +score, {
+          backgroundcolor: "#FFF",
           fontSize: "32px",
           fill: "#000",
+        });
+        scoreTime = 120;
+        scoreTimeText = this.add.text(500, 6, "Time:" +scoreTime, {
+          fontSize: "32px",
+          fill: "#FFFFFF",
         });
 
         this.physics.add.collider(player, worldLayer);
@@ -98,14 +130,14 @@ export class Play3 extends Phaser.Scene {
         this.physics.add.collider(player, bombs, this.hitBomb, null, this);
     
         gameOver = false;
-        score = 0;        
+               
     }
 
     update() {
        
 
-       if (score == 150) {
-            this.scene.start("Win", { score: score });  
+       if (score == 415) {
+            this.scene. start("Win", { score: score });  
           }
         if (gameOver) {
 
